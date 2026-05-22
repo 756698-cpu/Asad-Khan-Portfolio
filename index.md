@@ -3,5 +3,5 @@ Welcome to my ICS4U portfolio. I’ll use this site to post my work and reflecti
 
 ## Highlights
 - 🔧 Project: **(Final Report)** – *(What I changed from the original AI-generated code and how my program meets the requirements)*
-- 📝 Blog/Reflection: [Reflection](./posts/first_reflection.md)
+- 📝 Report: [Reflection](./posts/first_reflection.md)
 - [README Repository](./posts/README.md)
