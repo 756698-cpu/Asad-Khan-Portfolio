@@ -26,4 +26,4 @@ Paddle Tron is a two-player arcade Pong game built with Java Swing. The goal of 
 ## How to Play
 * Left Paddle: Use W to move up, S to move down.
 * Right Paddle: Use the Up Arrow to move up, Down Arrow to move down.
-* Goal: Deflect the ball past the opponent's paddle. The game levels up every 3 points.
+* Goal: Deflect the ball past the opponent's paddle. 
