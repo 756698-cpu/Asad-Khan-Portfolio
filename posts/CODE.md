@@ -1,3 +1,6 @@
+# Code
+
+```
 import java.io.*; // $Asad$
 import java.util.Scanner; // $Asad$
 import javax.swing.JOptionPane; // $Asad$
@@ -460,3 +463,4 @@ public class ScoreSystem {
         }
     }
 }
+```
