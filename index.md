@@ -3,5 +3,5 @@ Welcome to my ICS4U portfolio. I’ll use this site to post my work and reflecti
 
 ## Highlights
 - 🔧 Project: **(Repository)** – *(What I will change from the original AI-generated code and project overview)*
-- 📝 Report: [Project Overview](./posts/reflection.md)
+- 📝 Report: [Project Overview](./posts/repository.md)
 - [README Repository](./posts/README.md)
