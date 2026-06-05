@@ -10,13 +10,13 @@
 
 ## 🛠️ Computer Science Concepts Applied
 
-This project translates core Object-Oriented Programming (OOP) concepts learned throughout the term into a functional application:
+This project uses core Object-Oriented Programming (OOP) concepts learned throughout the term into a functional application:
 
-* **Inheritance:** Features a structure utilizing an abstract `SeaCreature` superclass, which branches into distinct subclasses (`Shark`, `Jellyfish`) with specialized movement behaviors.
-* **File I/O:** Reads from and writes to a local `leaderboard.txt` file to persist user high scores across game sessions.
-* **Animation & Game Loop:** Employs a Java Swing `Timer` running at ~60 FPS to handle physics updates and smooth component rendering.
-* **Event Handling:** Uses a custom `KeyAdapter` to listen for keyboard inputs (`Up` / `Down` arrows) for seamless submarine navigation.
-* **Swing Components:** Integrates a variety of `JComponents` including `JButton`, `JLabel`, and custom `JPanel` canvases for the HUD and main menu system.
+* **Inheritance:** Will have a structure utilizing an abstract `SeaCreature` superclass, which branches into distinct subclasses (`Shark`, `Jellyfish`) with movement behaviors.
+* **File I/O:** Reads from and writes to a local `leaderboard.txt` file to high scores across game sessions.
+* **Animation & Game Loop:** Employs a Java Swing `Timer` running at 60 FPS to handle physics updates.
+* **Event Handling:** Uses a custom `KeyAdapter` to listen for keyboard inputs (`Up` / `Down` arrows) for submarine navigation.
+* **Swing Components:** Integrates a variety of `JComponents` including `JButton`, `JLabel`, and custom `JPanel` canvases for the main menu system.
 
 
 
@@ -40,29 +40,17 @@ This project translates core Object-Oriented Programming (OOP) concepts learned 
 * Goal: Deflect the ball past the opponent's paddle. 
 
 
+## How to Run the Program
 
+### Running on CodeHS
+1. Create five separate files in your project named exactly:
+   * `TrenchDiver.java`
+   * `GamePanel.java`
+   * `SeaCreature.java`
+   * `Shark.java`
+   * `Jellyfish.java`
+2. Hit **Run Code** 
 
-
-
-## 🛠️ Computer Science Concepts Applied
-
-This project translates core Object-Oriented Programming (OOP) concepts learned throughout the term into a functional application:
-
-* **Inheritance:** Features a structure utilizing an abstract `SeaCreature` superclass, which branches into distinct subclasses (`Shark`, `Jellyfish`) with specialized movement behaviors.
-* **File I/O:** Reads from and writes to a local `leaderboard.txt` file to persist user high scores across game sessions.
-* **Animation & Game Loop:** Employs a Java Swing `Timer` running at ~60 FPS to handle physics updates and smooth component rendering.
-* **Event Handling:** Uses a custom `KeyAdapter` to listen for keyboard inputs (`Up` / `Down` arrows) for seamless submarine navigation.
-* **Swing Components:** Integrates a variety of `JComponents` including `JButton`, `JLabel`, and custom `JPanel` canvases for the HUD and main menu system.
-
----
-
-## 🚀 How To Run the Application
-
-### Prerequisites
-* Java Development Kit (JDK) 8 or higher installed.
-* Git installed on your local machine.
-
-### Execution Instructions
-1. Clone the repository to your local machine:
-   ```bash
-   git clone [https://github.com/](https://github.com/)[YourGitHubUsername]/TrenchDiver.git
+## How to Play
+* **Submarine Controls:** Use the **Up Arrow** to move up, **Down Arrow** to move down.
+* **Goal:** Dodge incoming sea monsters (Sharks and Jellyfish) while collecting gold treasures to maximize your score.
