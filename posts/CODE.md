@@ -1,17 +1,18 @@
 # Code
 
 ```
-import java.io.*; // $Asad$
-import java.util.Scanner; // $Asad$
-import javax.swing.JOptionPane; // $Asad$
+// Asad Khan
+
+import java.io.*; 
+import java.util.Scanner; 
+import javax.swing.JOptionPane; 
 
 public class AuthSystem 
 {
-    // $Asad$ The name of the text file where user credentials will be saved
+    
     private static final String AUTH_FILE = "accounts.txt";
-
-    // $Asad$ Registers a new user. Returns true if successful, false if username is taken.
-    public static boolean registerUser(String username, String password) 
+    
+    public static boolean registerUser(String username, String password)
     {
         try 
         {
@@ -23,7 +24,7 @@ public class AuthSystem
                 Scanner scanner = new Scanner(file);
                 while (scanner.hasNextLine()) 
                 {
-                    // $Asad$ Split the line at the colon -> parts[0] is username, parts[1] is password
+                    // $Asad$ Split the line at the colon, parts[0] is username, parts[1] is password
                     String[] parts = scanner.nextLine().split(":");
                     
                     // $Asad$ If the username already exists (ignoring the capitalization), stop registration
@@ -39,16 +40,18 @@ public class AuthSystem
             // $Asad$ If username is unique, open the file to add the new username and password without deleting previous
             // $Asad$ This adds the new user to the end of the file without deleting existing users
             FileWriter writer = new FileWriter(AUTH_FILE, true);
-            writer.write(username + ":" + password + "\n");
+            writer.write(username + ":" + password + System.lineSeparator());
             writer.close();
             return true; 
             
         } 
+        
         catch (IOException e) 
         {
             return false; // Returns false if a file error happens
         }
     }
+    
 
     // $Asad$ Checks if the typed username and password matches records in file
     public static boolean loginUser(String username, String password) 
@@ -88,102 +91,64 @@ public class AuthSystem
 
 import java.awt.*;
 
-public class Ball extends GameObject {
-    private double velX = 4.0;
-    private double velY = 4.0;
-    private int flashFrames = 0; // $Asad$ Tracks how long the ball will stay white
+public class Fish extends GameObject 
+{
 
-    public Ball(int x, int y, int size, Color color) {
-        super(x, y, size, size, color);
-    }
-
-    public void update() {
-        x += velX;
-        y += velY;
-    }
-
-    public void reverseX() { velX *= -1.05; } // Speed up slightly on hit
-    public void reverseY() { velY *= -1; }
-
-    public void reset(int screenWidth, int screenHeight) {
-        x = screenWidth / 2 - width / 2;
-        y = screenHeight / 2 - height / 2;
-        velX = (Math.random() > 0.5) ? 4 : -4; // Random initial direction
+    public Fish(int x, int y, int width, int height, int speed) 
+    {
+        super(x, y, width, height, speed);
     }
 
     @Override
-    public void draw(Graphics g) {
-        if (flashFrames > 0) // $Asad$
-        {
-            g.setColor(Color.WHITE);
-            flashFrames--; // $Asad$ Count down each frame
-        } else // $Asad$
-        {
-            g.setColor(color); // $Asad$ Back to normal neon yellow
-        }
-        g.fillOval((int)x, (int)y, width, height);
-    }
-
-    public double getX() { return x; }
-    public double getY() { return y; }
-    
-    public void triggerFlash() // $Asad$
+    public void draw(Graphics2D g2d) 
     {
-        this.flashFrames = 25; // $Asad$ Flash lasts for 25 frames (1 second = 50 frames)
+        // Drawing a Hostile Red Fish)
+        g2d.setColor(new Color(231, 76, 60));
+        g2d.fillOval(x, y, width, height);
+        
+        // Tail Fin
+        int[] xPoints = {x + width, x + width + 15, x + width + 15};
+        int[] yPoints = {y + height / 2, y, y + height};
+        g2d.fillPolygon(xPoints, yPoints, 3);
+        
+        // Angered Eye
+        g2d.setColor(Color.BLACK);
+        g2d.fillOval(x + 8, y + 8, 5, 5);
     }
-
 }
 
 ---
 
 import java.awt.*;
 
-public abstract class GameObject {
-    protected double x, y; // Use double for smoother sub-pixel movement
-    protected int width, height;
-    protected Color color;
+public abstract class GameObject 
+{
+    protected int x, y, width, height, speed;
 
-    public GameObject(double x, double y, int width, int height, Color color) {
+    public GameObject(int x, int y, int width, int height, int speed) 
+    {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.color = color;
+        this.speed = speed;
     }
 
-    // Every object must define how it draws itself
-    public abstract void draw(Graphics g);
-
-    // Standard collision box
-    public Rectangle getBounds() {
-        return new Rectangle((int)x, (int)y, width, height);
-    }
-}
-
----
-
-import java.awt.*;
-
-public class Paddle extends GameObject {
-    private static final int SPEED = 7;
-
-    public Paddle(double x, double y, int width, int height, Color color) {
-        super(x, y, width, height, color);
+    public void update() 
+    {
+        x -= speed; // Move items from right to left
     }
 
-    public void moveUp() { y -= SPEED; }
-    public void moveDown() { y += SPEED; }
-
-    // Keep paddle within the window frame
-    public void clamp(int screenHeight) {
-        if (y < 0) y = 0;
-        if (y > screenHeight - height) y = screenHeight - height;
+    public abstract void draw(Graphics2D g2d);
+    
+    public Rectangle getBounds() 
+    {
+        return new Rectangle(x, y, width, height);
     }
 
-    @Override
-    public void draw(Graphics g) {
-        g.setColor(color);
-        g.fillRoundRect((int)x, (int)y, width, height, 10, 10); // Rounded for style
+    public int getX() 
+    { 
+        return x; 
     }
 }
 
@@ -191,23 +156,293 @@ public class Paddle extends GameObject {
 
 import javax.swing.*;
 import java.awt.*;
-import javax.swing.JOptionPane; // $Asad$
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Random;
 
-public class PongGame extends JFrame {
-    public PongGame() {
-       
-        // $Asad$ Create a variable to hold the name, defaulting to Guest
+public class GamePanel extends JPanel implements ActionListener, KeyListener {
+    // Screen Dimensions
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 600;
+
+    // Game Loop Timer
+    private Timer timer;
+    private boolean gameOver = false;
+    private int score = 0;
+    private int health = 3;
+    private int highRecord = 0;
+
+    // Submarine Properties
+    private int subX = 100;
+    private int subY = 250;
+    private final int subWidth = 70;
+    private final int subHeight = 40;
+    private int subSpeed = 7;
+
+    // Input Tracking
+    private boolean upPressed = false;
+    private boolean downPressed = false;
+    private boolean leftPressed = false;
+    private boolean rightPressed = false;
+
+    // Game Objects
+    private ArrayList<GameObject> entities = new ArrayList<>();
+    private Random random = new Random();
+    private int spawnCounter = 0;
+
+    public GamePanel() {
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        setBackground(new Color(12, 45, 72)); // Deep ocean blue
+        setFocusable(true);
+        addKeyListener(this);
+
+        // Game loop ticks every 16ms (~60 FPS)
+        timer = new Timer(16, this);
+        this.highRecord = ScoreSystem.getGlobalHighScore();
+        timer.start();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Draw Background Details (Water particles/bubbles)
+        g2d.setColor(new Color(255, 255, 255, 30));
+        for (int i = 0; i < 10; i++) {
+            g2d.fillOval((i * 90 + score) % WIDTH, (i * 70) % HEIGHT, 8, 8);
+        }
+
+        // Draw Entities (Creatures and Treasures)
+        for (GameObject entity : entities) {
+            entity.draw(g2d);
+        }
+
+        // Draw Submarine
+        drawSubmarine(g2d, subX, subY);
+
+        // Draw UI (Score & Health)
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("Arial", Font.BOLD, 18));
+        g2d.drawString("TREASURE: $" + score, 20, 30);
+        g2d.drawString("Global High Score: $" + highRecord, 20, 55);
+        g2d.drawString("Lives: " + health + "/3", 650, 30);
+        
+        // Game Over Screen
+        if (gameOver) {
+            g2d.setColor(new Color(0, 0, 0, 180));
+            g2d.fillRect(0, 0, WIDTH, HEIGHT);
+
+            g2d.setColor(Color.RED);
+            g2d.setFont(new Font("Arial", Font.BOLD, 50));
+            g2d.drawString("GAME OVER", WIDTH / 2 - 150, HEIGHT / 2 - 20);
+
+            g2d.setColor(Color.WHITE);
+            g2d.setFont(new Font("Arial", Font.PLAIN, 20));
+            g2d.drawString("You collected $" + score + " in treasure.", WIDTH / 2 - 130, HEIGHT / 2 + 20);
+            g2d.drawString("Press 'R' to Restart", WIDTH / 2 - 60, HEIGHT / 2 + 60);
+        }
+    }
+
+    private void drawSubmarine(Graphics2D g2d, int x, int y) {
+        // Main Body
+        g2d.setColor(new Color(241, 196, 15)); // Yellow sub
+        g2d.fillOval(x, y, subWidth, subHeight);
+
+        // Periscope
+        g2d.setColor(new Color(212, 172, 13));
+        g2d.fillRect(x + subWidth / 2, y - 15, 6, 15);
+        g2d.fillRect(x + subWidth / 2, y - 15, 12, 6);
+
+        // Propeller
+        g2d.setColor(Color.LIGHT_GRAY);
+        g2d.fillRect(x - 8, y + subHeight / 3, 8, subHeight / 3);
+
+        // Windows
+        g2d.setColor(new Color(41, 128, 185));
+        g2d.fillOval(x + 15, y + 10, 12, 12);
+        g2d.fillOval(x + 40, y + 10, 12, 12);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (!gameOver) {
+            updateMovement();
+            handleSpawning();
+            updateEntities();
+            checkCollisions();
+        }
+        repaint();
+    }
+
+    private void updateMovement() {
+        if (upPressed && subY > 0) subY -= subSpeed;
+        if (downPressed && subY < HEIGHT - subHeight) subY += subSpeed;
+        if (leftPressed && subX > 0) subX -= subSpeed;
+        if (rightPressed && subX < WIDTH - subWidth) subX += subSpeed;
+    }
+
+    private void handleSpawning() {
+        spawnCounter++;
+        if (spawnCounter % 35 == 0) {
+            int spawnY = random.nextInt(HEIGHT - 50) + 10;
+            if (random.nextBoolean()) {
+                entities.add(new Fish(WIDTH, spawnY, 40, 30, random.nextInt(3) + 4));
+            } else {
+                entities.add(new Treasure(WIDTH, spawnY, 25, 25, 4));
+            }
+        }
+    }
+
+    private void updateEntities() {
+        Iterator<GameObject> iterator = entities.iterator();
+        while (iterator.hasNext()) {
+            GameObject entity = iterator.next();
+            entity.update();
+            if (entity.getX() + 40 < 0) {
+                iterator.remove();
+            }
+        }
+    }
+
+    private void checkCollisions() {
+        Rectangle subBounds = new Rectangle(subX, subY, subWidth, subHeight);
+        Iterator<GameObject> iterator = entities.iterator();
+
+        while (iterator.hasNext()) {
+            GameObject entity = iterator.next();
+
+            if (subBounds.intersects(entity.getBounds())) { 
+                if (entity instanceof Fish) {
+                    ScoreSystem.updateHighScore(health);
+                    this.highRecord = ScoreSystem.getGlobalHighScore();
+                    health--;
+                    if (health <= 0) {
+                        gameOver = true;
+                        timer.stop();
+                        ScoreSystem.updateHighScore(score);
+                    }
+                } else if (entity instanceof Treasure) {
+                    score += 100;
+                }
+                iterator.remove();
+            }
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int code = e.getKeyCode();
+        if (code == KeyEvent.VK_UP || code == KeyEvent.VK_W) upPressed = true;
+        if (code == KeyEvent.VK_DOWN || code == KeyEvent.VK_S) downPressed = true;
+
+        if (gameOver && code == KeyEvent.VK_R) {
+            restartGame();
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        int code = e.getKeyCode();
+        if (code == KeyEvent.VK_UP || code == KeyEvent.VK_W) upPressed = false;
+        if (code == KeyEvent.VK_DOWN || code == KeyEvent.VK_S) downPressed = false;
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {}
+
+    private void restartGame() {
+        subX = 100;
+        subY = 250;
+        score = 0;
+        health = 3;
+        entities.clear();
+        gameOver = false;
+        
+        highRecord = ScoreSystem.getGlobalHighScore(); 
+    
+        timer.start();
+    }
+}
+
+---
+
+import java.io.*;
+import java.util.Scanner;
+
+public class ScoreSystem 
+{
+    // $Asad$ The name of the file the single highest score value
+    private static final String SCORE_FILE = "highscore.txt";
+
+    // $Asad$ Reads and returns the top score currently saved on the machine
+    public static int getGlobalHighScore() 
+    {
+        try 
+        {
+            File file = new File(SCORE_FILE);
+            // $Asad$ If the file doesn't exist yet, the record is 0
+            if (!file.exists())
+            {
+                return 0;
+            }
+            // $Asad$ Open scanner to read the integer stored in the file
+            Scanner scanner = new Scanner(file);
+            if (scanner.hasNextInt())
+            {
+                int high = scanner.nextInt();
+                scanner.close();
+                return high;
+            }
+            scanner.close();
+            return 0;
+        } 
+        catch (Exception e) 
+        {
+            return 0; // $Asad$ Goes to 0 if the file is corrupted or empty
+        }
+    }
+
+    // $Asad$ Compares the game's current score to the all-time record and updates it if beaten
+    public static void updateHighScore(int currentScore) 
+    {
+        // $Asad$ Only run if the player actually beat the previous high score
+        if (currentScore > getGlobalHighScore()) 
+        {
+            try 
+            {
+                // $Asad$ This clears out the old number and replaces it with the brand new record
+                FileWriter writer = new FileWriter(SCORE_FILE);
+                writer.write(String.valueOf(currentScore));
+                writer.close();
+            } 
+            catch (IOException e) 
+            {
+                System.out.println("Error saving high score.");
+            }
+        }
+    }
+}
+
+---
+
+import javax.swing.*;
+import javax.swing.JOptionPane;
+
+public class SubmarineGame extends JFrame {
+    public SubmarineGame() {
+        
         String user = "Guest"; 
         
-        // $Asad$ Create an array of text options that will turn into clickable buttons in the popup
         String[] options = {"Login", "Register", "Guest Mode"};
         
         // $Asad$ Open a popup box with the 3 buttons. 
         // $Asad$ It returns a number based on what was clicked: 0 = Login, 1 = Register, 2 = Guest Mode
-        int choice = JOptionPane.showOptionDialog(null, "Welcome to Paddle Tron! Choose an option:", "Authentication", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]
+        int choice = JOptionPane.showOptionDialog(null, "Welcome to Trench Diver! Choose an option:", "Authentication", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]
         );
         
-        // $Asad$ Check if the user clicked either the "Login" (0) or "Register" (1) button
         if (choice == 0 || choice == 1) 
         {
             // $Asad$ Open an input box asking for their username
@@ -257,210 +492,52 @@ public class PongGame extends JFrame {
         // $Asad$ they clicked "Guest Mode" (2) or closed out the popup window entirely
         else 
         {
-            // $Asad$Skip everything and just launch the game directly as a Guest
+            // $Asad$ Skip everything and just launch the game directly as a Guest
             JOptionPane.showMessageDialog(null, "Starting game in Guest Mode.");
-        } 
-
+        }
         
-        
-        setTitle("Neon Pong - Java Edition");
+        setTitle("Trench Diver: Submarine Adventure");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
-
-        PongPanel gamePanel = new PongPanel();
-        add(gamePanel, BorderLayout.CENTER);
-
-        // Control Toolbar
-        JPanel controls = new JPanel();
-        controls.setBackground(Color.DARK_GRAY);
-
-        JButton pauseBtn = new JButton("Pause/Resume");
-        pauseBtn.setFocusable(false); // Crucial: don't steal focus from game
-        pauseBtn.addActionListener(e -> gamePanel.togglePause());
-
-        JButton resetBtn = new JButton("Reset Score");
-        resetBtn.setFocusable(false);
-        resetBtn.addActionListener(e -> gamePanel.resetGame());
-
-        controls.add(pauseBtn);
-        controls.add(resetBtn);
-        add(controls, BorderLayout.SOUTH);
-
-        pack(); // Resize window to fit panel
-        setLocationRelativeTo(null);
-        setVisible(true);
+        setResizable(false);
+        
+        // Add the game panel
+        GamePanel gamePanel = new GamePanel();
+        add(gamePanel);
+        pack();
+        
+        setLocationRelativeTo(null); // Center on screen
     }
 
     public static void main(String[] args) {
-        // Run UI tasks on the Event Dispatch Thread
-        SwingUtilities.invokeLater(PongGame::new);
-    }
-}
-
----
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.HashSet;
-import java.util.Set;
-
-public class PongPanel extends JPanel implements ActionListener {
-    private final int WIDTH = 800, HEIGHT = 500;
-    private Timer timer;
-    private Ball ball;
-    private Paddle leftPaddle, rightPaddle;
-    private int leftScore = 0, rightScore = 0;
-    private boolean paused = false;
-
-    // Track keys currently pressed for simultaneous movement
-    private final Set<Integer> pressedKeys = new HashSet<>();
-
-    public PongPanel() {
-        setPreferredSize(new Dimension(WIDTH, HEIGHT));
-        setBackground(new Color(30, 30, 30));
-        setFocusable(true);
-
-        ball = new Ball(WIDTH/2, HEIGHT/2, 20, Color.YELLOW);
-        leftPaddle = new Paddle(20, HEIGHT/2 - 50, 15, 100, new Color(0, 200, 255));
-        rightPaddle = new Paddle(WIDTH - 35, HEIGHT/2 - 50, 15, 100, new Color(255, 50, 50));
-
-        // Smooth key handling
-        addKeyListener(new KeyAdapter() {
-            public void keyPressed(KeyEvent e) { pressedKeys.add(e.getKeyCode()); }
-            public void keyReleased(KeyEvent e) { pressedKeys.remove(e.getKeyCode()); }
+        SwingUtilities.invokeLater(() -> {
+            new SubmarineGame().setVisible(true);
         });
-
-        timer = new Timer(16, this); // ~60 FPS
-        timer.start();
-    }
-
-    public void togglePause() { paused = !paused; }
-    
-    public void resetGame() {
-        leftScore = 0; rightScore = 0;
-        ball.reset(WIDTH, HEIGHT);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (!paused) {
-            updateLogic();
-        }
-        repaint();
-    }
-
-    private void updateLogic() {
-        // Paddle movement
-        if (pressedKeys.contains(KeyEvent.VK_W)) leftPaddle.moveUp();
-        if (pressedKeys.contains(KeyEvent.VK_S)) leftPaddle.moveDown();
-        if (pressedKeys.contains(KeyEvent.VK_UP)) rightPaddle.moveUp();
-        if (pressedKeys.contains(KeyEvent.VK_DOWN)) rightPaddle.moveDown();
-
-        leftPaddle.clamp(HEIGHT);
-        rightPaddle.clamp(HEIGHT);
-
-        ball.update();
-
-        // Wall collisions
-        if (ball.getY() <= 0 || ball.getY() >= HEIGHT - 20) ball.reverseY();
-
-        // Paddle collisions
-        if (ball.getBounds().intersects(leftPaddle.getBounds()) || 
-            ball.getBounds().intersects(rightPaddle.getBounds())) {
-            ball.reverseX();
-            ball.triggerFlash(); // $Asad$ To trigger flash white ball
-        }
-
-        // Scoring
-        if (ball.getX() < 0) { rightScore++; ball.reset(WIDTH, HEIGHT); }
-        if (ball.getX() > WIDTH) { leftScore++; ball.reset(WIDTH, HEIGHT); }
-        
-        if (ball.x < 0) 
-        { 
-            rightScore++; 
-            ScoreSystem.updateHighScore(rightScore); // <-- CONNECTOR: Checks if Right Player set a record
-            ball.reset(WIDTH, HEIGHT); 
-        }
-        if (ball.x > WIDTH) 
-        { 
-            leftScore++; 
-            ScoreSystem.updateHighScore(leftScore);  // <-- CONNECTOR: Checks if Left Player set a record
-            ball.reset(WIDTH, HEIGHT); 
-        }
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        
-        // Draw Center Line
-        g.setColor(new Color(255, 255, 255, 50));
-        g.drawLine(WIDTH/2, 0, WIDTH/2, HEIGHT);
-
-        ball.draw(g);
-        leftPaddle.draw(g);
-        rightPaddle.draw(g);
-
-        // UI
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 40));
-        g.drawString(String.valueOf(leftScore), WIDTH/2 - 60, 50);
-        g.drawString(String.valueOf(rightScore), WIDTH/2 + 30, 50);
-
-        if (paused) {
-            g.drawString("PAUSED", WIDTH/2 - 80, HEIGHT/2);
-        }
-        
-        g.setFont(new Font("Arial", Font.BOLD, 14));
-        g.setColor(Color.CYAN);
-
-        // CONNECTOR: Grabs the current highest score from the ScoreSystem file
-        g.drawString("ALL-TIME RECORD: " + ScoreSystem.getGlobalHighScore(), 20, 20);
     }
 }
 
 ---
 
-import java.io.*;
-import java.util.Scanner;
+import java.awt.*;
 
-public class ScoreSystem {
-    // The name of the file storing the single highest score value
-    private static final String SCORE_FILE = "highscore.txt";
+public class Treasure extends GameObject 
+{
 
-    // Reads and returns the top score currently saved on the machine
-    public static int getGlobalHighScore() {
-        try {
-            File file = new File(SCORE_FILE);
-            // If the file doesn't exist yet, the record is 0
-            if (!file.exists()) return 0;
-            
-            // Open scanner to read the single integer stored in the file
-            Scanner scanner = new Scanner(file);
-            int high = scanner.nextInt();
-            scanner.close();
-            return high;
-            
-        } catch (Exception e) {
-            return 0; // Fallback to 0 if the file is corrupted or empty
-        }
+    public Treasure(int x, int y, int width, int height, int speed) 
+    {
+        super(x, y, width, height, speed);
     }
 
-    // Compares the game's current score to the all-time record and updates it if beaten
-    public static void updateHighScore(int currentScore) {
-        // Only run if the player actually beat the previous high score
-        if (currentScore > getGlobalHighScore()) {
-            try {
-                // Open FileWriter in overwrite mode (no 'true' argument)
-                // This clears out the old number and replaces it with the brand new record
-                FileWriter writer = new FileWriter(SCORE_FILE);
-                writer.write(String.valueOf(currentScore));
-                writer.close();
-            } catch (IOException e) {
-                System.out.println("Error saving high score.");
-            }
-        }
+    @Override
+    public void draw(Graphics2D g2d) 
+    {
+        // Drawing the Golden Chest
+        g2d.setColor(new Color(243, 156, 18));
+        g2d.fillRect(x, y, width, height);
+        g2d.setColor(new Color(241, 196, 15));
+        g2d.fillRect(x + 2, y + 2, width - 4, height - 4);
+        
+        // Lock
+        g2d.setColor(Color.DARK_GRAY);
+        g2d.fillRect(x + width / 2 - 3, y + height / 2, 6, 6);
     }
 }
-```
