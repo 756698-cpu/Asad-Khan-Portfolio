@@ -59,9 +59,6 @@ This project uses core Object-Oriented Programming (OOP) concepts learned throug
 
 ---
 
-### Code
-
-```
 // Asad Khan
 
 import java.io.*; 
