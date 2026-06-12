@@ -56,9 +56,6 @@ This project uses core Object-Oriented Programming (OOP) concepts learned throug
 * **Goal:** Dodge incoming sea monsters (Sharks and Jellyfish) while collecting gold treasures to maximize your score.
 
 ## Code
-
----
-
 // Asad Khan
 
 import java.io.*; 
